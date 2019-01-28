@@ -1,0 +1,94 @@
+<!--Json_Formatter-->
+<meta charset="utf-8"> 
+<!Doctype html>
+<html>
+    <head>
+        <h1>BLACK HOLE -  [{json}] </h1>
+        <style>
+            .tab4 {
+                width: 20px;
+                display: inline-block;
+            }
+        </style>
+    </head>
+ 
+    <script type="text/javascript">
+        /*Enhancement_Object
+            ChangesToBeMade:{}
+
+            CasesToBeHandled:{
+                Parse the given string  -   replace '\' literal if the inp is string ;)
+                Circular json(cycle)    -   var x = {"data":12,"data1":null,"data2":"[...]","isCycle":true}
+            }
+        */
+        var treeLevel = 0;
+        var formatedJsonBody = null;
+
+        function formatter(){
+            formatedJsonBody = document.getElementById("formatedJsonBody");
+            var data = JSON.parse(document.getElementById("jsondata").value);
+            traverse(data);
+            console.log("********-----DONE-----*********");
+        }
+
+        function traverse(json){
+            var curObjectProperties = Object.getOwnPropertyNames(json);
+            if(curObjectProperties.length == 0) return;
+
+            curObjectProperties.forEach(function(object, pos){
+                var selectedObj = json[object];
+                if(typeof selectedObj === typeof null && selectedObj != null){                    
+                    print(object,"{");
+                    treeLevel++;
+                    traverse(selectedObj);
+                    treeLevel--;
+                }
+                else    
+                    print(object, selectedObj);
+            });
+        }
+
+        function print(key,value,seperator){
+            var _4tab = "\u0009";//"\u00A0\u00A0\u00A0\u00A0";
+            var tabObject = document.createElement("span");
+            var objectKey = document.createElement("span");
+            var object = document.createElement("span");
+            var valueOperator = document.createElement("span");
+            var lineBreak = document.createElement("br");
+            
+            tabObject.classList.add("gapStruct");
+            //objectKey.setAttribute("id")
+
+            /*tabObject.innerHTML = */getCharStream(_4tab,tabObject);
+            objectKey.innerText = key + "\u00A0";
+            valueOperator.innerText = "\u00A0:\u00A0"
+            object.innerText = "\u00A0" + value;
+
+
+            formatedJsonBody.appendChild(tabObject);
+            formatedJsonBody.appendChild(objectKey);
+            formatedJsonBody.appendChild(valueOperator);
+            formatedJsonBody.appendChild(object);
+            formatedJsonBody.appendChild(lineBreak);
+            //console.log(key+" : "+value);
+        }
+
+        function getCharStream(value,parent){
+            var valueStream = "";
+            for(var i=0; i < treeLevel; i++){
+                var tab = document.createElement('span');
+                tab.classList.add('tab4');
+                parent.appendChild(tab);
+                valueStream += value;
+            }
+            return valueStream;
+        }
+
+    </script>
+ 
+    <body>
+        <textarea id="jsondata" name="dataarea"></textarea>
+        <button onclick="formatter();">Render</button><br><br>
+        <div id="formatedJsonBody"></div>
+    </body>
+</html>

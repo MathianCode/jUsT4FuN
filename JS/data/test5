@@ -1,0 +1,6 @@
+var data = function create(){
+	var x = {"x":null};
+	var y = {"y":x};
+	y.y.x = y;
+	return y;
+}

@@ -1,0 +1,6 @@
+var x = {
+  test : function(){console.log(arguments);},
+  test1 : [
+    (function(){ return {testinner:"test"};})()
+]
+};

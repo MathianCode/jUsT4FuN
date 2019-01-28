@@ -1,0 +1,39 @@
+function traverseJsonTree(json){
+            var innerDatas = json.constructor === [].constructor ? json : Object.entries(json);
+            
+            if(Object.keys(json).length == 0){
+                console.log("null obj");
+            }
+
+            else if(Object.keys(json).length > 0){
+                var i;
+                for(i=0; i < innerDatas.length; i++){
+                    console.log("type =>"+typeof innerDatas[i]);
+                    if(typeof innerDatas[i] === typeof null)
+                        break;
+                    console.log(innerDatas[i]);
+                }
+                console.log(innerDatas[i]);
+                if(i < innerDatas.length)
+                    traverseJsonTree(innerDatas[i]);
+            }
+            console.log(json);
+        }
+
+        /*TO check if any two objects are equal*/
+        function isEqual(object1,object2){
+            var prop1 = Object.getOwnPropertyNames(object1);
+            var prop2 = Object.getOwnPropertyNames(object2);
+
+            if(prop1.length != prop2.length)
+                return false;
+            for(var i=0; i < prop1.length; i++){
+                var buf = prop1[i];
+                if(object1[buf] !== object2[buf]){
+                    //console.log(object1[buf]+" "+object2[buf]);
+                    return false;
+                }
+                //console.log(object1[buf]+" "+object2[buf]);
+            }
+            return true;
+        }  
