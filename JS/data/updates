@@ -1,0 +1,15 @@
+{ -> bracket curly left
+} -> bracket curly right
+[ -> bracket square left
+] -> bracket square right
+" -> double quote left
+" -> double quote right
+str -> string
+true -> boolean
+123 -> number
+
+
+========================
+colapse(-) <-> expand(+)
+========================
+
