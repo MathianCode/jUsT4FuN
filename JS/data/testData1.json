@@ -10,6 +10,14 @@
 				"seeked":2.4
 			},
 			"welcome note":12
+		},
+		{
+			"seen":false,
+			"who":"double",
+			"part":{
+				"seeked":1.8
+			},
+			"welcome note":20
 		}
 	],
 	"sedate":"perons1"

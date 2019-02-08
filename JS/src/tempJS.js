@@ -36,7 +36,6 @@ function traverse(json){
                     break;
                 }
             }
-
             treeLevel++;
             traverse(selectedObj);
             treeLevel--;
@@ -53,6 +52,7 @@ function traverse(json){
 function getObjectType(object){
     if(object instanceof Array) return 1;
     if(object instanceof Object) return 2;
+    return 0;
 }
 
 function printElemBracObj(bracket){
