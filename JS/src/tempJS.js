@@ -22,19 +22,29 @@ function traverse(json){
 
     curObjectProperties.forEach(function(object, pos){
         var selectedObj = json[object];
+        console.log(typeof object +"\t"+typeof pos+"\t"+typeof selectedObj);
         if(typeof selectedObj === typeof null && selectedObj != null){
-            if(getObjectType(selectedObj) === 1){
-                print(object,"[");
+            var type = getObjectType(selectedObj);
+
+            switch(type){
+                case 1:
+                    print(object,"[");
+                    break;
+                case 2:{
+                    if(getObjectType(json) == 1) printElemBracObj("{");
+                    else print(object,"{");
+                    break;
+                }
             }
+
             treeLevel++;
             traverse(selectedObj);
             treeLevel--;
-        }
-        else{    
-            if(getObjectType(selectedObj) === 1){
+            if(getObjectType(selectedObj) == 1){
                 console.log(typeof object);
-                print(object,"]");
-            }
+                printElemBracObj("]");
+            }else printElemBracObj("}");
+        }else{    
             print(object, selectedObj);
         }
     });
@@ -42,12 +52,28 @@ function traverse(json){
 
 function getObjectType(object){
     if(object instanceof Array) return 1;
+    if(object instanceof Object) return 2;
+}
+
+function printElemBracObj(bracket){
+    
+    var _4tab = "&Tab;";
+    var lineBreak = document.createElement("br");
+    var brackObject = document.createElement("span");
+    var tabObject = createTabObject(_4tab, treeLevel);
+
+    tabObject.setAttribute("class", "gapStruct");
+    brackObject.innerText = bracket;
+
+    formatedJsonBody.appendChild(tabObject);
+    formatedJsonBody.appendChild(brackObject);
+    formatedJsonBody.appendChild(lineBreak);
 }
 
 function print(key,value,seperator){
     var space = "\u00A0";
     var _4tab = "&Tab;";//"&nbsp;&nbsp;&nbsp;&nbsp;";
-    var tabObject = document.createElement("span");
+    var tabObject = createTabObject(_4tab, treeLevel);
     var objectKey = document.createElement("span");
     var object = document.createElement("span");
     var valueOperator = document.createElement("span");
@@ -55,7 +81,6 @@ function print(key,value,seperator){
     
     tabObject.setAttribute("class", "gapStruct");
 
-    tabObject.innerHTML = getCharStream(_4tab);
     objectKey.innerText = key + space;
     valueOperator.innerText = space+":"+space;
     object.innerText = space + value;
@@ -69,9 +94,11 @@ function print(key,value,seperator){
     //console.log(key+" : "+value);
 }
 
-function getCharStream(value){
+function createTabObject(string, repeatCount){
+    var docObject = document.createElement("span");
     var valueStream = "";
-    for(var i=0; i < treeLevel; i++)
-        valueStream += value;
-    return valueStream;
+    for(var i=0; i < repeatCount; i++)
+        valueStream += string;
+    docObject.innerHTML = valueStream;
+    return docObject;
 }
