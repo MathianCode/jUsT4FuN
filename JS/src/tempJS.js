@@ -72,7 +72,7 @@ function printElemBracObj(bracket){
 
 function print(key,value,seperator){
     var space = "\u00A0";
-    var _4tab = "&Tab;";//"&nbsp;&nbsp;&nbsp;&nbsp;";
+    var _4tab = "&Tab;";
     var tabObject = createTabObject(_4tab, treeLevel);
     var objectKey = document.createElement("span");
     var object = document.createElement("span");
@@ -101,4 +101,8 @@ function createTabObject(string, repeatCount){
         valueStream += string;
     docObject.innerHTML = valueStream;
     return docObject;
+}
+
+function createQuoteObject(){
+    return null;
 }
