@@ -1,108 +1,209 @@
-/*Enhancement_Object
-    ChangesToBeMade:{}
+        /*Enhancement_Object
+            ChangesToBeMade:{}
 
-    CasesToBeHandled:{
-        Parse the given string  -   replace '\' literal if the inp is string ;)
-        Circular json(cycle)    -   var x = {"data":12,"data1":null,"data2":"[...]","isCycle":true}
-    }
-*/
-var treeLevel = 0;
-var formatedJsonBody = null;
-
-function formatter(){
-    formatedJsonBody = document.getElementById("formatedJsonBody");
-    var data = JSON.parse(document.getElementById("jsondata").value);
-    traverse(data);
-    console.log("********-----DONE-----*********");
-}
-
-function traverse(json){
-    var curObjectProperties = Object.getOwnPropertyNames(json);
-    if(curObjectProperties.length == 0) return;
-
-    curObjectProperties.forEach(function(object, pos){
-        var selectedObj = json[object];
-        console.log(typeof object +"\t"+typeof pos+"\t"+typeof selectedObj);
-        if(typeof selectedObj === typeof null && selectedObj != null){
-            var type = getObjectType(selectedObj);
-
-            switch(type){
-                case 1:
-                    print(object,"[");
-                    break;
-                case 2:{
-                    if(getObjectType(json) == 1) printElemBracObj("{");
-                    else print(object,"{");
-                    break;
-                }
+            CasesToBeHandled:{
+                Parse the given string  -   replace '\' literal if the inp is string ;)
+                Circular json(cycle)    -   var x = {"data":12,"data1":null,"data2":"[...]","isCycle":true}
             }
-            treeLevel++;
-            traverse(selectedObj);
-            treeLevel--;
-            if(getObjectType(selectedObj) == 1){
-                console.log(typeof object);
-                printElemBracObj("]");
-            }else printElemBracObj("}");
-        }else{    
-            print(object, selectedObj);
+        */
+        var treeLevel = 0;
+        var formatedJSONFrame = null;
+        var data = null;
+
+        function formatter(json){
+            data = fetchData(json);
+            if(data !== null){
+                init();
+                traverse(data);
+                console.log("********-----DONE-----*********");
+            } else
+                console.log("no data to render!!");
         }
-    });
-}
 
-function getObjectType(object){
-    if(object instanceof Array) return 1;
-    if(object instanceof Object) return 2;
-    return 0;
-}
+        function init(){
+            treeLevel = 0;
+            formatedJSONFrame = document.createElement("div");
+            formatedJSONFrame.setAttribute("id","formatedJsonBody");
+            document.body.appendChild(formatedJSONFrame);
+        }
 
-function printElemBracObj(bracket){
-    
-    var _4tab = "&Tab;";
-    var lineBreak = document.createElement("br");
-    var brackObject = document.createElement("span");
-    var tabObject = createTabObject(_4tab, treeLevel);
+        function fetchData(json){
+            if(json === null || (typeof json !== typeof null)){
+                var data = document.getElementById("jsondata").value;
+                if(data === null || data === "") return null;
+                return JSON.parse(data);
+            }
+            return json;
+        }
 
-    tabObject.setAttribute("class", "gapStruct");
-    brackObject.innerText = bracket;
+        function traverse(json){
+            var curObjectProperties = Object.getOwnPropertyNames(json);
+            if(curObjectProperties.length == 0) return;
 
-    formatedJsonBody.appendChild(tabObject);
-    formatedJsonBody.appendChild(brackObject);
-    formatedJsonBody.appendChild(lineBreak);
-}
+            curObjectProperties.forEach(function(object, pos){
+                var selectedObj = json[object];
+                console.log(typeof object +"\t"+typeof pos+"\t"+typeof selectedObj);
+                if(typeof selectedObj === typeof null && selectedObj != null){
+                    var type = getObjectType(selectedObj);
+                    switch(type){
+                        case 1:
+                            print(object,"[");
+                            createLineBreak();
+                            break;
+                        case 2:
+                            if(getObjectType(json) == 1) printElemBracObj("{");
+                            else print(object,"{");
+                            createLineBreak();
+                            break;
+                    }
+                    treeLevel++;
+                    traverse(selectedObj);
+                    treeLevel--;
+                    if(type == 1){
+                        console.log(typeof object);
+                        printElemBracObj("]");
+                        if(curObjectProperties.length !== pos+1)
+                            createTrailingDelimeter(",");
+                        createLineBreak();
+                    }else{
+                        printElemBracObj("}");
+                        if(getObjectType(json) == 1){
+                            if(json.length !== pos+1)
+                                createTrailingDelimeter(",");
+                        }else{
+                            if(curObjectProperties.length !== pos+1)
+                                createTrailingDelimeter(",");
+                        }
+                        createLineBreak();
+                    }
+                }else{
+                    if(getObjectType(json) == 1){
+                        if(!(json.length === selectedObj) && !(object === "length")){
+                            createArrayElement(selectedObj);
+                            if(json.length !== pos+1)
+                                createTrailingDelimeter(",");
+                            createLineBreak();
+                        }
+                    }
+                    else {
+                        print(object, selectedObj);
+                        if(curObjectProperties.length !== pos+1)
+                            createTrailingDelimeter(",");
+                        createLineBreak();
+                    }
+                }
+            });
+        }
 
-function print(key,value,seperator){
-    var space = "\u00A0";
-    var _4tab = "&Tab;";
-    var tabObject = createTabObject(_4tab, treeLevel);
-    var objectKey = document.createElement("span");
-    var object = document.createElement("span");
-    var valueOperator = document.createElement("span");
-    var lineBreak = document.createElement("br");
-    
-    tabObject.setAttribute("class", "gapStruct");
+        function createLineBreak(){
+            var lineBreak = document.createElement("br");
+            addToBody([lineBreak]);
+        }
 
-    objectKey.innerText = key + space;
-    valueOperator.innerText = space+":"+space;
-    object.innerText = space + value;
+        function createTrailingDelimeter(delimeter){
+            var trailingDelimeter = document.createElement("span");
+            trailingDelimeter.innerText = "\u00A0"+delimeter;
+            addToBody([trailingDelimeter]);
+        }
+
+        function getObjectType(object){
+            if(object instanceof Array) return 1;
+            if(object instanceof Object) return 2;
+            return 0;
+        }
+
+        function printElemBracObj(bracket){
+            
+            var _4tab = "&Tab;";
+            var brackObject = document.createElement("span");
+            var tabObject = createTabObject(_4tab);
+
+            brackObject.innerText = bracket;
+
+            addToBody([tabObject, brackObject]);
+        }
+
+        function createArrayElement(element){
+            var tabObject = createTabObject(null);
+            var arrElem = document.createElement("span");
+
+            arrElem.innerText = element;
+
+            addToBody([tabObject, arrElem]);
+        }
+
+        function print(key,value,seperator){
+            var space = "\u00A0";
+            var _4tab = "&Tab;";
+            var tabObject = createTabObject(_4tab);
+            var objectKey = document.createElement("span");
+            var object = document.createElement("span");
+            var valueOperator = document.createElement("span");
+            
+            
+            objectKey.innerText = key + space;
+            valueOperator.innerText = space+":"+space;
+            object.innerText = space + value;
+
+            addToBody([tabObject, objectKey, valueOperator, object]);
+        }
 
 
-    formatedJsonBody.appendChild(tabObject);
-    formatedJsonBody.appendChild(objectKey);
-    formatedJsonBody.appendChild(valueOperator);
-    formatedJsonBody.appendChild(object);
-    formatedJsonBody.appendChild(lineBreak);
-    //console.log(key+" : "+value);
-}
+        function createTabObject(tabValue){
+            tabValue = tabValue === null ? "&Tab;" : tabValue;
+            var tabObject = createObjectWithValueStream(tabValue, treeLevel);
+            tabObject.setAttribute("class", "gapStruct");
+            return tabObject;
+        }
 
-function createTabObject(string, repeatCount){
-    var docObject = document.createElement("span");
-    var valueStream = "";
-    for(var i=0; i < repeatCount; i++)
-        valueStream += string;
-    docObject.innerHTML = valueStream;
-    return docObject;
-}
+        function createObjectWithValueStream(string, repeatCount){
+            var docObject = document.createElement("span");
+            var valueStream = "";
+            for(var i=0; i < repeatCount; i++)
+                valueStream += string;
+            docObject.innerHTML = valueStream;
+            return docObject;
+        }
 
-function createQuoteObject(){
-    return null;
-}
+        function addToBody(elements){
+            if(elements === null || !elements.length) return;
+            elements.forEach(function(element){
+                formatedJsonBody.appendChild(element);
+            });
+        }
+
+        function createQuoteObject(){
+            return null;
+        }
+
+
+        function frameReset(){
+            var curFrame = document.getElementById("formatedJsonBody");
+            if(curFrame == null) return;
+            document.querySelectorAll("#formatedJsonBody").forEach(function(frame){
+                document.body.removeChild(frame);
+            });
+            document.createElement("div");
+            var frame = document.createElement("div");
+            frame.setAttribute("id","formatedJsonBody");
+            document.body.appendChild(frame);
+        }
+
+
+    function CopyToClipboard(containerid) {
+        containerid="formatedJsonBody";
+        if (document.selection) { 
+            
+            var range = document.body.createTextRange();
+            range.moveToElementText(document.getElementById(containerid));
+            range.select().createTextRange();
+            document.execCommand("copy"); 
+        
+        } else if (window.getSelection) {
+            
+            var range = document.createRange();
+            range.selectNode(document.getElementById(containerid));
+            window.getSelection().addRange(range);
+            document.execCommand("copy");
+        }
+    }

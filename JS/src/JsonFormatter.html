@@ -9,12 +9,15 @@
             }
         </style>
     </head>
- 
+    
     <script type="text/javascript" src="tempJS.js"></script>
  
     <body>
         <textarea id="jsondata" name="dataarea"></textarea>
         <button onclick="formatter();">Render</button><br><br>
-        <div id="formatedJsonBody"></div>
+        <div>
+            <button onclick="frameReset();">Reset</button>
+            <button onclick="CopyToClipboard('');">copy</button>
+        </div>
     </body>
 </html>
