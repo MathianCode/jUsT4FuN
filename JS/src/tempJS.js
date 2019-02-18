@@ -10,7 +10,7 @@
         var formatedJSONFrame = null;
         var data = null;
 
-        function formatter(json){
+        function renderJson(json){
             data = fetchData(json);
             if(data !== null){
                 init();
@@ -23,7 +23,8 @@
         function init(){
             treeLevel = 0;
             formatedJSONFrame = document.createElement("div");
-            formatedJSONFrame.setAttribute("id","formatedJsonBody");
+            formatedJSONFrame.setAttribute("class","formattedJsonFrame");
+            //formatedJSONFrame.setAttribute("id","formatedJsonBody");
             document.body.appendChild(formatedJSONFrame);
         }
 
@@ -168,7 +169,7 @@
         function addToBody(elements){
             if(elements === null || !elements.length) return;
             elements.forEach(function(element){
-                formatedJsonBody.appendChild(element);
+                formatedJSONFrame.appendChild(element);
             });
         }
 
@@ -178,31 +179,32 @@
 
 
         function frameReset(){
-            var curFrame = document.getElementById("formatedJsonBody");
+            var curFrame = document.getElementsByClassName("formattedJsonFrame")[0];
             if(curFrame == null) return;
-            document.querySelectorAll("#formatedJsonBody").forEach(function(frame){
+            document.querySelectorAll("formattedJsonFrame").forEach(function(frame){
                 document.body.removeChild(frame);
             });
             document.createElement("div");
             var frame = document.createElement("div");
-            frame.setAttribute("id","formatedJsonBody");
+            frame.setAttribute("id","formattedJsonFrame");
+            //frame.setAttribute("id","formatedJsonBody");
             document.body.appendChild(frame);
         }
 
 
-    function CopyToClipboard(containerid) {
-        containerid="formatedJsonBody";
+    function CopyToClipboard(containerName) {
+        containerName="formattedJsonFrame";
         if (document.selection) { 
             
             var range = document.body.createTextRange();
-            range.moveToElementText(document.getElementById(containerid));
+            range.moveToElementText(document.getElementsByClassName("containerName")[0]);
             range.select().createTextRange();
             document.execCommand("copy"); 
         
         } else if (window.getSelection) {
             
             var range = document.createRange();
-            range.selectNode(document.getElementById(containerid));
+            range.selectNode(document.getElementById(containerName));
             window.getSelection().addRange(range);
             document.execCommand("copy");
         }

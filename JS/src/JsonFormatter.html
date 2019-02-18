@@ -1,11 +1,14 @@
 <!--Json_Formatter-->
-<!Doctype html>
+<!Doctype html>.
 <html>
     <head>
         <h1>BLACK HOLE -  [{json}] </h1>
         <style>
             .gapStruct{
                 white-space: pre;
+            }
+            .formattedJsonFrame{
+                background-color: #191919;
             }
         </style>
     </head>
@@ -14,7 +17,7 @@
  
     <body>
         <textarea id="jsondata" name="dataarea"></textarea>
-        <button onclick="formatter();">Render</button><br><br>
+        <button onclick="renderJson();">Render</button><br><br>
         <div>
             <button onclick="frameReset();">Reset</button>
             <button onclick="CopyToClipboard('');">copy</button>
