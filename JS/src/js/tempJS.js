@@ -16,28 +16,26 @@
                 init();
                 traverse(data);
                 console.log("********-----DONE-----*********");
-            } else
+            } else 
                 console.log("no data to render!!");
         }
 
         function init(){
             treeLevel = 0;
-            formatedJSONFrame = document.createElement("div");
-            formatedJSONFrame.setAttribute("class","formattedJsonFrame");
-            //formatedJSONFrame.setAttribute("id","formatedJsonBody");
-            document.body.appendChild(formatedJSONFrame);
+            frameReset("formatedJsonBody");
         }
 
         function fetchData(json){
             if(json === null || (typeof json !== typeof null)){
-                var data = document.getElementById("jsondata").value;
-                if(data === null || data === "") return null;
+                /*var data = document.getElementById("jsondata").value;
+                if(data === null || data === "") return null;*/
+                json = {};
                 return JSON.parse(data);
             }
             return json;
         }
 
-        function traverse(json){
+        function traverse(json){    
             var curObjectProperties = Object.getOwnPropertyNames(json);
             if(curObjectProperties.length == 0) return;
 
@@ -178,33 +176,33 @@
         }
 
 
-        function frameReset(){
-            var curFrame = document.getElementsByClassName("formattedJsonFrame")[0];
-            if(curFrame == null) return;
-            document.querySelectorAll("formattedJsonFrame").forEach(function(frame){
+        function frameReset(frameName){
+            var curFrame = document.getElementsByClassName(frameName)[0];
+            document.querySelectorAll("."+frameName).forEach(function(frame){
                 document.body.removeChild(frame);
             });
-            document.createElement("div");
             var frame = document.createElement("div");
-            frame.setAttribute("id","formattedJsonFrame");
+            frame.setAttribute("class",frameName);
+            frame.setAttribute("id","223-A1H");
             //frame.setAttribute("id","formatedJsonBody");
             document.body.appendChild(frame);
+            formatedJSONFrame = frame;
         }
 
 
     function CopyToClipboard(containerName) {
-        containerName="formattedJsonFrame";
+        containerName="formatedJsonBody";
         if (document.selection) { 
             
             var range = document.body.createTextRange();
-            range.moveToElementText(document.getElementsByClassName("containerName")[0]);
+            range.moveToElementText(document.getElementsByClassName(containerName)[0]);
             range.select().createTextRange();
             document.execCommand("copy"); 
         
         } else if (window.getSelection) {
             
             var range = document.createRange();
-            range.selectNode(document.getElementById(containerName));
+            range.selectNode(document.getElementsByClassName(containerName)[0]);
             window.getSelection().addRange(range);
             document.execCommand("copy");
         }
