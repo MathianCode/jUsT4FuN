@@ -22,7 +22,7 @@
 
         function init(){
             treeLevel = 0;
-            frameReset("formatedJsonBody");
+            frameReset("formattedJsonFrame");
         }
 
         function fetchData(json){
@@ -191,7 +191,7 @@
 
 
     function CopyToClipboard(containerName) {
-        containerName="formatedJsonBody";
+        containerName="formattedJsonFrame";
         if (document.selection) { 
             
             var range = document.body.createTextRange();
