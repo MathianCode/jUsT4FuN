@@ -7,14 +7,15 @@
         }
     */
     var treeLevel = 0;
-    var formatedJSONFrame = null;
+    var formattedJSONFrame = null;
     var data = null;
+    var bodyFrameName = "formattedJsonFrame";
 
     function renderJson(json){
         data = fetchData(json);
         if(data !== null){
             init();
-            traverse(data);
+            //traverse(data);
             console.log("********-----DONE-----*********");
         } else {
             console.log("no data to render!!");
@@ -23,10 +24,10 @@
 
     function init(){
         treeLevel = 0;
-        frameReset("formattedJsonFrame");
+        frameReset(bodyFrameName);
         var openBracket   = null;
         var closeBracket = null;
-        if(formatedJSONFrame != null){
+        if(formattedJSONFrame != null){
             if(data instanceof Array){
                 openBracket = BracketType.ARROPN;
                 closeBracket =  BracketType.ARRCLS;
@@ -34,11 +35,11 @@
                 openBracket = BracketType.OBJOPN;
                 closeBracket =  BracketType.OBJCLS;
             }
-            formatedJSONFrame.appendChild(createOpenBracket(openBracket));
-            formatedJSONFrame.appendChild(document.createElement("div"));
+            formattedJSONFrame.appendChild(createOpenBracket(openBracket));
+            formattedJSONFrame.appendChild(document.createElement("div"));
             var bracketBox = document.createElement("div");
             bracketBox.appendChild(createCloseBracket(closeBracket));
-            formatedJSONFrame.appendChild(bracketBox); 
+            formattedJSONFrame.appendChild(bracketBox); 
         }
     }
 
@@ -184,7 +185,7 @@
     function addToBody(elements){
         if(elements === null || !elements.length) return;
         elements.forEach(function(element){
-            formatedJSONFrame.appendChild(element);
+            formattedJSONFrame.appendChild(element);
         });
     }
 
@@ -251,7 +252,7 @@
         docObject.setAttribute("class", "closequote" + " " + quoteType);
         docObject.innerHTML = "\"";
         return docObject;
-    }
+    }*/
 
     function createOpenBracket(bracketType){
         if(bracketType === null || bracketType === ""){
@@ -284,35 +285,35 @@
     function createElement(tags, identifier, identifierValue, value, elementPackType) {
         var newElement = document.createElement(tags);
         newElement.setAttribute(identifier, identifierValue);
-        if(elementPackType === elementPackType.HTML){
+        if(elementPackType === ElementPackType.HTML){
             newElement.innerHTML = value; 
         }else if(elementPackType === ElementPackType.TEXT){
             newElement.innerText = value;
         }
         return newElement;
-    }*/
+    }
 
-    const BracketType{
+    const BracketType = {
         OBJOPN : '{',
         OBJCLS : '}',
         ARROPN : '[',
         ARRCLS : ']'
     }
 
-    const Tags {
-        DIV: 'div',
-        SPAN: 'span'
+    const Tags = {
+        DIV : 'div',
+        SPAN : 'span'
     }
 
-    const Identifier {
-        CLASS: 'class',
-        ID: 'id',
-        NAME: 'name',
+    const Identifier = {
+        CLASS : 'class',
+        ID : 'id',
+        NAME : 'name',
     }
 
     const ElementPackType = {
-        HTML: 'innerHTML',
-        TEXT: 'innerText'
+        HTML : 'innerHTML',
+        TEXT : 'innerText'
     }
 
     function frameReset(frameName){
@@ -323,13 +324,12 @@
         var frame = document.createElement("div");
         frame.setAttribute("class", frameName);
         frame.setAttribute("id", "223-A1H");
-        //frame.setAttribute("id","formatedJsonBody");
         document.body.appendChild(frame);
-        formatedJSONFrame = frame;
+        formattedJSONFrame = frame;
     }
 
     function CopyToClipboard(containerName) {
-        containerName="formattedJsonFrame";
+        containerName=bodyFrameName;
         if (document.selection) { 
             
             var range = document.body.createTextRange();
