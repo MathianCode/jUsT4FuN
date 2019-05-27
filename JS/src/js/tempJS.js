@@ -10,6 +10,7 @@
     var formattedJSONFrame = null;
     var data = null;
     var bodyFrameName = "formattedJsonFrame";
+    var childElement = null;
 
     function renderJson(json){
         data = fetchData(json);
@@ -23,7 +24,7 @@
     }
 
     function init(){
-        treeLevel = 0;
+        treeLevel = 1;
         frameReset(bodyFrameName);
         var openBracket   = null;
         var closeBracket = null;
@@ -35,11 +36,12 @@
                 openBracket = BracketType.OBJOPN;
                 closeBracket =  BracketType.OBJCLS;
             }
-            formattedJSONFrame.appendChild(createOpenBracket(openBracket));
-            formattedJSONFrame.appendChild(document.createElement("div"));
-            var bracketBox = document.createElement("div");
-            bracketBox.appendChild(createCloseBracket(closeBracket));
-            formattedJSONFrame.appendChild(bracketBox); 
+            childElement = document.createElement("div");
+            addToBody([
+                createOpenBracket(openBracket, Tags.SPAN), 
+                childElement, 
+                createCloseBracket(closeBracket, Tags.DIV), 
+            ]);
         }
     }
 
@@ -47,7 +49,7 @@
         if(json === null || (typeof json !== typeof null)){
             var data = document.getElementById("jsondata").value;
             if(data === null || data === "") return null;
-            /*json = {};*/
+            /*json = {};*/  
             return JSON.parse(data);
         }
         return json;
@@ -162,11 +164,13 @@
         object.innerText = space + value;
 
         addToBody([tabObject, objectKey, valueOperator, object]);
-    }
+    }*/
 
+
+    /*function  <- start from here*/ 
 
     function createTabObject(tabValue){
-        tabValue = tabValue === null ? "&Tab;" : tabValue;
+        tabValue = tabValue === null || tabValue === undefined ? "&Tab;" : tabValue;
         var tabObject = createObjectWithValueStream(tabValue, treeLevel);
         tabObject.setAttribute("class", "gapStruct");
         return tabObject;
@@ -181,21 +185,44 @@
         return docObject;
     }
 
-
-    function addToBody(elements){
-        if(elements === null || !elements.length) return;
-        elements.forEach(function(element){
-            formattedJSONFrame.appendChild(element);
-        });
-    }
-
-    function createArrayObject(){
+    function createArrayObjectElement(){
         var docObject = document.classreateElement("span");
     }
 
-    function createObject(key, value){
-        var docObject = document.createElement("span");
+    function createObjectElement(key){
+        var newChild = document.createElement("div");
+        var docObject = document.createElement("div");
+        newChild.setAttribute(class, "objecttype");
+        buffer.CURRENT_OBJECT = newChild;
+        addElementsToObject(buffer, [
+            createTabObject(), 
+            createKeyString(key),
+            createValuePointer(),
+            createOpenBracket(BracketType.OBJOPN, Tags.SPAN),
+            newChild,
+            createCloseBracket(BracketType.OBJCLS, Tags.DIV)
+        ]);
+        //childElement.appendChild(buffer);
+        return docObject;
+    }
 
+    function createStringObject(key, value){
+        var docObject = document.createElement("div");
+        docObject.setAttribute("class", "stringobject");
+        addElementsToObject(docObject, [
+            createTabObject(),
+            createKeyString(key),
+            createValuePointer(),
+            createValueString(value)
+        ]);
+        return docObject;
+    }
+
+    function createValuePointer(){
+        var docObject = document.createElement("span");
+        docObject.setAttribute("class", "valuepointer");
+        docObject.innerHTML = ":";
+        return docObject;
     }
 
     function createValueString(string){
@@ -252,9 +279,9 @@
         docObject.setAttribute("class", "closequote" + " " + quoteType);
         docObject.innerHTML = "\"";
         return docObject;
-    }*/
+    }
 
-    function createOpenBracket(bracketType){
+    function createOpenBracket(bracketType, packType){
         if(bracketType === null || bracketType === ""){
             return null;
         }
@@ -266,10 +293,10 @@
         }else{
             return null; //can set someother character
         }
-        return createElement(Tags.SPAN, Identifier.CLASS, "bracket openbracket" + bracketClass, bracketType, ElementPackType.HTML);
+        return createElement(packType, Identifier.CLASS, "bracket openbracket" + bracketClass, bracketType, ElementPackType.HTML);
     }
 
-    function createCloseBracket(bracketType){
+    function createCloseBracket(bracketType, packType){
         var bracketClass = null;
         if(bracketType === null || bracketType === ""){
             return null;
@@ -279,7 +306,7 @@
         }else if(bracketType === BracketType.ARRCLS){
             bracketClass = "arraybracket"
         }
-        return createElement(Tags.SPAN, Identifier.CLASS, "bracket closebracket " + bracketClass, bracketType, ElementPackType.HTML);
+        return createElement(packType, Identifier.CLASS, "bracket closebracket " + bracketClass, bracketType, ElementPackType.HTML);
     }
 
     function createElement(tags, identifier, identifierValue, value, elementPackType) {
@@ -291,6 +318,30 @@
             newElement.innerText = value;
         }
         return newElement;
+    }
+
+    function addToBody(elements){
+        return addElementsToObject(formattedJSONFrame, elements);
+        /*if(elements === null || !elements.length) return;
+        elements.forEach(function(element){
+            formattedJSONFrame.appendChild(element);
+        });*/
+    }
+
+    function addElementsToObject(object, elements){
+        try{
+            if(elements === null || !elements.length) return;
+            elements.forEach(function(element){
+                object.appendChild(element);
+            });
+        }catch(e){
+            return false;
+        }
+        return true;
+    }
+
+    const buffer = {
+        CURRENT_OBJECT : null
     }
 
     const BracketType = {
