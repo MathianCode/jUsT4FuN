@@ -197,9 +197,9 @@
         addElementsToObject(buffer, [
             createTabObject(), 
             createKeyString(key),
-            createValuePointer(),
+            createKeyValueSeperator(),
             createOpenBracket(BracketType.OBJOPN, Tags.SPAN),
-            newChild,
+            newChild,   
             createCloseBracket(BracketType.OBJCLS, Tags.DIV)
         ]);
         //childElement.appendChild(buffer);
@@ -212,15 +212,15 @@
         addElementsToObject(docObject, [
             createTabObject(),
             createKeyString(key),
-            createValuePointer(),
+            createKeyValueSeperator(),
             createValueString(value)
         ]);
         return docObject;
     }
 
-    function createValuePointer(){
+    function createKeyValueSeperator(){
         var docObject = document.createElement("span");
-        docObject.setAttribute("class", "valuepointer");
+        docObject.setAttribute("class", "keyvalue_seperator");
         docObject.innerHTML = ":";
         return docObject;
     }
@@ -238,7 +238,7 @@
 
     function createKeyString(string) {
         if(string === null || string === ""){
-            return null;
+               return null;
         }
         var docObject = document.createElement("span");
         docObject.setAttribute("class","keystring");
